@@ -48,7 +48,7 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
-    const user = req.user;
+    const user = await User.findById(req.user);
     user.refreshToken = null;
     await user.save();
     res.clearCookie("refreshToken").json(new ApiResponse(200, "Logout successful"));
