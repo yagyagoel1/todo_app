@@ -55,27 +55,22 @@ const TodoForm = () => {
    try {
     let response;
      if (id !== "create") {
-     try {
-       response= await axios.put(
-          `http://localhost:3000/api/v1/tasks/${id}`,
-          {
-            title,
-            description,
-            dueDate,
-            status,
-          },
-          {
-            withCredentials: true,
-            headers:{
-              authorization:localStorage.getItem("accessToken"),
-              refreshToken:localStorage.getItem("refreshToken")
-            }
-          }
-        );
-     } catch (error) {
-      toast.error(error.response.data.message)
-    return;
-     }
+      response= await axios.put(
+         `http://localhost:3000/api/v1/tasks/${id}`,
+         {
+           title,
+           description,
+           dueDate,
+           status,
+         },
+         {
+           withCredentials: true,
+           headers:{
+             authorization:localStorage.getItem("accessToken"),
+             refreshToken:localStorage.getItem("refreshToken")
+           }
+         }
+       );
      }
      //if creating a todo
      else {
