@@ -56,4 +56,14 @@ const updateTask = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, 'Task updated successfully', task));
 })
 
-export { getTasks,getTaskById,createTask,updateTask }
+const deleteTask = asyncHandler(async (req, res, next) => {
+    const {id} = req.params;
+    const task = await Todo.findById(id);
+    if(!task){
+        return res.status(404).json(new ApiError(404, 'Task not found', []))
+    }
+    await task.deleteOne();
+
+    res.status(200).json(new ApiResponse(200, 'Task deleted successfully', []));
+})
+export { getTasks,getTaskById,createTask,updateTask ,deleteTask}
