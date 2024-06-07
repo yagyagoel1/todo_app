@@ -24,4 +24,14 @@ const getTaskById= asyncHandler(async (req, res, next) => {
     res.status(200).json(new ApiResponse(200, 'Task fetched successfully', task));
 });
 
-export { getTasks,getTaskById}
+const createTask = asyncHandler(async (req, res, next) => { 
+    let {title,description,dueDate,status} = req.body;
+
+    const validate= createTaskSchema({title,description,dueDate,status});
+    if(!validate.success){
+        return res.status(400).json(new ApiError(400, validate.error.message, []))
+    }
+    const createdTask = await Todo.create({title,description,dueDate,status,owner:req.user});
+    res.status(201).json(new ApiResponse(201, 'Task created successfully', createdTask));
+})
+export { getTasks,getTaskById,createTask}

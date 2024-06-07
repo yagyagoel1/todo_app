@@ -9,22 +9,23 @@ const todoSchema = new mongoose.Schema({
         lowercase: true,
         trim: true,
     },
-    completed: {
-        type: Boolean,
-        required: true,
-        trim: true,
-        lowercase:true
-    },
-    status:{
-        type: Status,
-        required: true,
-        default: 'pending',
-    },
-    category:{
+    description: {
         type: String,
         required: true,
+        lowercase: true,
+        trim: true,
     },
-    
+    status:{
+        type: String,
+    enum: Object.values(Status),
+    required: true,
+    default: Status.pending,
+    },
+    owner:{
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
+    },
     dueDate: {
         type: Date,
         required: true,
@@ -42,4 +43,4 @@ const todoSchema = new mongoose.Schema({
     
     }
 
-    export default mongoose.model('Todo', todoSchema);
+    export const Todo =  mongoose.model('Todo', todoSchema);
