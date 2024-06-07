@@ -53,4 +53,4 @@ const logoutUser = asyncHandler(async (req, res) => {
     await user.save();
     res.clearCookie("refreshToken").json(new ApiResponse(200, "Logout successful"));
 });
-export {createUser,loginUser}
+export {createUser,loginUser,logoutUser}

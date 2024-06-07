@@ -1,4 +1,4 @@
-import { createUser, loginUser } from "../controllers/user.controller"
+import { createUser, loginUser, logoutUser } from "../controllers/user.controller"
 
 
 
@@ -11,4 +11,6 @@ router.route('/signup')
 router.route('/login')
 .post(loginUser)
 
+router.route('/logout')
+.post(logoutUser)
 export default router
