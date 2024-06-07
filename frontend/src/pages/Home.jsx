@@ -25,7 +25,8 @@ const Navigate = useNavigate();
         });
         setTodos(response.data.data);
       } catch (error) {
-        console.error("Error fetching todos:", error);
+        toast.error(error.response.data.message)
+    return;
       }
     };
 
