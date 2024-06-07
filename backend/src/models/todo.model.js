@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
+export const Status = {
+    pending: "pending",
+    completed: "completed",
+    inProgress: "inProgress",
 
+}
 
 const todoSchema = new mongoose.Schema({
     title: {
@@ -36,11 +41,6 @@ const todoSchema = new mongoose.Schema({
     });
 
 
-    export const Status = {
-        pending: "pending",
-        completed: "completed",
-        inProgress: "inProgress",
-    
-    }
+
 
     export const Todo =  mongoose.model('Todo', todoSchema);

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Status } from "../models/todo.model";
+import { Status } from "../models/todo.model.js";
 
 
 

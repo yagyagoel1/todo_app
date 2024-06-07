@@ -1,13 +1,13 @@
-import { createUserSchema, loginUserSchema } from "../schemas/user.schema";
-import ApiError from "../utils/ApiError";
-import { asyncHandler } from "../utils/asyncHandler";
-import { User } from "../models/user.model";
-import { ApiResponse } from "../utils/ApiResponse";
+import { createUserSchema, loginUserSchema } from "../schemas/user.schema.js";
+import ApiError from "../utils/ApiError.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { User } from "../models/user.model.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 
 const createUser =  asyncHandler(async (req, res) => {
     const { email, fullName, password} = req.body;
-    const validate = await createUserSchema.validate({email, fullName, password});
+    const validate = await createUserSchema({email, fullName, password});
     if(validate.error){
         return res.status(400).json(new ApiError(400, validate.error.message));
         
@@ -16,13 +16,22 @@ const createUser =  asyncHandler(async (req, res) => {
     if(userExists){
         return res.status(400).json(new ApiError(400, "User already exists"));
     }
-   const user =  await User.create({email, fullName, password}).select("-password");
-   res.status(201).json(new ApiResponse(201, "User created successfully", user));
+   const user =  await User.create({email, fullName, password});
+   const accessToken = await user.generateAccessToken();
+   const refreshToken = await user.generateRefreshToken();
+   user.refreshToken = refreshToken;
+   await user.save();
+   
+   res.cookie("refreshToken", refreshToken, {
+       httpOnly: true,
+     
+   })// set the refresh token in a cookie
+   res.status(200).json(new ApiResponse(200, "Signin successful", {accessToken,refreshToken}));// send the access token in the response
 });
 
 const loginUser = asyncHandler(async (req, res) => {
     const {email, password} = req.body;
-    const validate = await loginUserSchema.validate({email, password});
+    const validate = await loginUserSchema({email, password});
     if(validate.error){
         return res.status(400).json(new ApiError(400, validate.error.message));
     }
@@ -39,12 +48,12 @@ const loginUser = asyncHandler(async (req, res) => {
     user.refreshToken = refreshToken;
     await user.save();
     
-    res.status(200)
+    res
     .cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: true,
+
     })// set the refresh token in a cookie
-    .json(new ApiResponse(200, "Login successful", {accessToken}));// send the access token in the response
+    res.status(200).json(new ApiResponse(200, "Login successful", {accessToken,refreshToken}));// send the access token in the response
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
